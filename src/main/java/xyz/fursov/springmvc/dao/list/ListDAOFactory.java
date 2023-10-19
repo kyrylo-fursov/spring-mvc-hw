@@ -1,23 +1,21 @@
 package xyz.fursov.springmvc.dao.list;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import xyz.fursov.springmvc.dao.BookDAO;
-import xyz.fursov.springmvc.dao.BookDAOFactory;
+import xyz.fursov.springmvc.dao.DAOFactory;
 
 @Component
-public class ListBookDAOFactory implements BookDAOFactory {
-
-    private final ApplicationContext applicationContext;
+public class ListDAOFactory implements DAOFactory {
+    private final ListBookDAO listBookDAO;
 
     @Autowired
-    public ListBookDAOFactory() {
-        this.applicationContext = applicationContext;
+    public ListDAOFactory(ListBookDAO listBookDAO) {
+        this.listBookDAO = listBookDAO;
     }
 
     @Override
     public BookDAO getBookDAO() {
-        return applicationContext.getBean(ListBookDAO.class);
+        return listBookDAO;
     }
 }

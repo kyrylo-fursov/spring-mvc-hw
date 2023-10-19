@@ -1,4 +1,4 @@
-package xyz.fursov.springmvc.exceptions;
+package xyz.fursov.springmvc.exception;
 
 public class BookNotFoundException extends RuntimeException {
     public BookNotFoundException(String message, IllegalArgumentException e) {

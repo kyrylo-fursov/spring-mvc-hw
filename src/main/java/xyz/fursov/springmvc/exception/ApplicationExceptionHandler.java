@@ -1,53 +1,40 @@
-package xyz.fursov.springmvc.exceptions;
+package xyz.fursov.springmvc.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@Component
 @RestControllerAdvice
-public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
+public class ApplicationExceptionHandler {
 
     @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<BookIncorrectData> handleBookNotFoundException(
+    public ResponseEntity<BookExceptionResponse> handleBookNotFoundException(
             BookNotFoundException e) {
-        BookIncorrectData data = new BookIncorrectData();
-        data.setInfo(e.getMessage());
+        BookExceptionResponse data = new BookExceptionResponse();
+        data.setMessage(e.getMessage());
+        data.setMessage(e.getMessage());
         return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<BookIncorrectData> handleException(
-            Exception e) {
-        BookIncorrectData data = new BookIncorrectData();
-        data.setInfo(e.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity<BookExceptionResponse>  handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e) {
+        BookExceptionResponse data = new BookExceptionResponse();
+        data.setMessage(e.getMessage());
         return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
 
-
-//    @ExceptionHandler(BookNotFoundException.class)
-//    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    @ResponseBody
-//    public String handleBookNotFoundException(BookNotFoundException ex) {
-//        return ex.getMessage();
-//    }
-
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public String handleBadRequestException(BadRequestException ex) {
-        return ex.getMessage();
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseEntity<BookExceptionResponse>  handleMethodArgumentTypeMismatchException(
+            MethodArgumentTypeMismatchException e) {
+        BookExceptionResponse data = new BookExceptionResponse();
+        data.setMessage(e.getMessage());
+        return new ResponseEntity<>(data, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(BookAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ResponseBody
-    public String handleBookAlreadyExistsException(BookAlreadyExistsException ex) {
-        return ex.getMessage();
-    }
-
-
 }
+
