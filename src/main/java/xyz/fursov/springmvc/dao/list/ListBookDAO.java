@@ -1,16 +1,19 @@
 package xyz.fursov.springmvc.dao.list;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Repository;
 import xyz.fursov.springmvc.dao.BookDAO;
 import xyz.fursov.springmvc.entity.Book;
 import org.springframework.data.domain.Pageable;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
+@ConditionalOnProperty(name = "dao.type", havingValue = "list")
 public class ListBookDAO implements BookDAO {
     private final List<Book> books;
 
@@ -52,7 +55,7 @@ public class ListBookDAO implements BookDAO {
         return books.stream()
                 .filter(book -> book.getId() == id)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No book with ID " + id + " found."));
+                .orElseThrow(() -> new EntityNotFoundException("No book with ID " + id + " found."));
     }
 
     @Override
@@ -88,7 +91,7 @@ public class ListBookDAO implements BookDAO {
     public void deleteBook(int id) {
         boolean removed = books.removeIf(book -> book.getId() == id);
         if (!removed) {
-            throw new IllegalArgumentException("No book with ID " + id + " found.");
+            throw new EntityNotFoundException("No book with ID " + id + " found.");
         }
     }
 
@@ -105,7 +108,7 @@ public class ListBookDAO implements BookDAO {
             existingBook.setAuthor(updatedBook.getAuthor());
             existingBook.setYear(updatedBook.getYear());
         } else {
-            throw new IllegalArgumentException("No book with ID " + id + " found.");
+            throw new EntityNotFoundException("No book with ID " + id + " found.");
         }
     }
 }

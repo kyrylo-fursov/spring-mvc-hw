@@ -3,6 +3,7 @@ package xyz.fursov.springmvc.controller;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +34,7 @@ public class BookController {
     public ResponseEntity<List<Book>> getAllBooks(@RequestParam(required = false) String q,
                                                   @PageableDefault(size = 10) Pageable pageable) {
         List<Book> books;
-        if (q != null) {
+        if (q != null && !q.isEmpty()) {
             books = bookService.getAllBooks(q, pageable);
         } else {
             books = bookService.getAllBooks(pageable);
@@ -50,7 +51,7 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody @Valid Book book) {
         bookService.addBook(book);
-        return ResponseEntity.ok(book);
+        return ResponseEntity.status(HttpStatus.CREATED).body(book);
     }
 
     @PutMapping
@@ -60,8 +61,8 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable int id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable int id) {
         bookService.deleteBook(id);
-        return ResponseEntity.ok("Book deleted successfully");
+        return ResponseEntity.ok().build();
     }
 }
